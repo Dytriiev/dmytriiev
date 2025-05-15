@@ -3,7 +3,6 @@ console.log(JSON.parse(strArray))
 
 function summArrayStr(strArray){
  const array = JSON.parse(strArray)
- console.log(array.length)
  function summArray(array){
   return  array.reduce((acc,item)=>{
     if(!Array.isArray(item)){
