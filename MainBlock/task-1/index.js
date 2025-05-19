@@ -1,7 +1,7 @@
 const strArray = "[1, 2, [3, 4, [5]], 6]"
 console.log(JSON.parse(strArray))
 
-const arrayStr_2 = '[]'
+const arrayStr_2 = '[[[]]]'
 
 function summArrayStr(strArray){
     
@@ -25,8 +25,10 @@ function summArrayStr(strArray){
  function summArrayStr_2(strArray){
     
     const array = JSON.parse(strArray)
-    if(array.length === 0) return 0
+    
+
     function summArray_2(array){
+        if(array.length === 0) return 0
         let length = array.length
      if(length === 1){
      let r = array[array.length-1]
