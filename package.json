@@ -3,15 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node ./index",
-    "task-1b":"node . /BonusBlock/task-1/index",
-    "task-2b":"node ./BonusBlock/task-2/index",
-    "task-3b":"node ./BonusBlock/task-3/index",
-    "task-4b":"node ./BonusBlock/task-4/index",
-    "task-1":"node ./MainBlock/task-1/index"
+    "task-1b": "node . /BonusBlock/task-1/index",
+    "task-2b": "node ./BonusBlock/task-2/index",
+    "task-3b": "node ./BonusBlock/task-3/index",
+    "task-4b": "node ./BonusBlock/task-4/index",
+    "task-1": "node ./MainBlock/task-1/index",
+    "task-2": "nodemon ./MainBlock/task-2/index"
   },
   "author": "dmyrtiiev",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
 }

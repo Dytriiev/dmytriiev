@@ -16,7 +16,7 @@ function summArrayStr(strArray){
     },0)
 } return summArray(array)
 }
- let result1 = summArrayStr( arrayStr_2)
+ let result1 = summArrayStr(strArray)
  console.log(result1)
  ////////////////////////////////////////////////////////
 
@@ -53,7 +53,7 @@ function summArrayStr(strArray){
  }
 
 
- const res_2 = summArrayStr_2(arrayStr_2)
+ const res_2 = summArrayStr_2(strArray)
  console.log(res_2)
 
  
