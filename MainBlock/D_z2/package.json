@@ -1,0 +1,27 @@
+{
+  "name": "d_z2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "start":"node index.js",
+    "dev": "nodemon index.js"
+    
+  },
+  "author": "dmytriiev",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/node": "^24.0.3",
+    "eslint": "^9.29.0",
+    "globals": "^16.2.0",
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0"
+  }
+}
