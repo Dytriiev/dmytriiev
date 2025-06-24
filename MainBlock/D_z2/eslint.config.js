@@ -21,6 +21,10 @@ export default defineConfig([
     rules: {
       'no-unused-vars': 'warn',
       'no-undef':       'warn',
+      'indent': ['error', 2],
+      'quotes': ['error', 'single', { avoidEscape: true }],
+      'prefer-const': 'warn'
+
     },
   },
 ]);
