@@ -14,50 +14,48 @@ rl.on('line', async (line) => {
   console.log(`Hello, ${line}!`);
   const [command, ...rest] = line.trim().split(' ')
   const params = rest.join(' ')
- async function main(){
+  async function main(){
     switch(command){
     case 'add':
       await  commands.add(params)
          
-        break
+      break
     case 'list':
-    await commands.list()
+      await commands.list()
          
-        break
+      break
     case 'delete':
-     await   commands.delete(params) 
+      await   commands.delete(params) 
         
-        break
+      break
     case 'stats':
-    await commands.stats()
+      await commands.stats()
         
-        break
+      break
     case 'update':
-     await   commands.update(params)
+      await   commands.update(params)
         
-        break
+      break
     case 'done':
       await  commands.done(params)
         
-        break
+      break
     case 'help':
-        commands.help()
+      commands.help()
         
-        break
+      break
     case 'exit':
-        commands.exit(rl)  
-        break    
+      commands.exit(rl)  
+      break    
     default:
-        console.log(`command ${command} does not exist try command help`) ;
+      console.log(`command ${command} does not exist try command help`) ;
                             
-  }
+    }
 
- }
-await main()
+  }
+  await main()
   rl.prompt()
 }).on('close', () => {
   console.log('Bye!');
   process.exit(0);
 });
-////////////////////////////
-
