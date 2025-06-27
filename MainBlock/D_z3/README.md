@@ -15,7 +15,7 @@ dendmik/node-base:latest задіян пользователь node і його 
 
 5.Запити робив в Postman:
 
- http://localhost:8080/kv/ method GET  
+ http://localhost:8080/kv/ method POST
  body  
   {
     "key":"Katy",
@@ -25,7 +25,7 @@ dendmik/node-base:latest задіян пользователь node і його 
 
 6.Запит:
 
- http://localhost:8080/kv/Katy отримуе у відповідь
+ http://localhost:8080/kv/Katy method GET отримуе у відповідь
 {
     "value":"white"
 }
