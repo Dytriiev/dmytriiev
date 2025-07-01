@@ -1,4 +1,4 @@
-// eslint.config.js
+
 import { defineConfig } from 'eslint/config';
 import js from '@eslint/js';
 import globals from 'globals';
@@ -18,10 +18,21 @@ export default defineConfig([
     plugins: { js },
     extends: ['js/recommended'],
 
+    ignores: [
+    'dist/**',          // Игнорировать всю папку dist
+    '*.config.js',      // Все конфигурационные файлы
+    '**/*.spec.js',     // Все тестовые файлы
+    'node_modules/',     // Папка node_modules
+    '.eslintrc.js',     // Сам конфиг ESLint
+    '!.eslintignore',   // Исключение (не игнорировать этот файл)
+    'build/',
+    'coverage/'
+  ],
+
     rules: {
       'no-unused-vars': 'warn',
       'no-undef':       'warn',
-      'indent': ['error', 2],
+      'indent': ['warn', 2],
       'quotes': ['error', 'single', { avoidEscape: true }],
       'prefer-const': 'warn'
 

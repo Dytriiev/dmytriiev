@@ -23,34 +23,20 @@ async function getUserById(data){
     }
   } else{
     return user
-    // {
-    //      message:`User: ${user.name} was found!`,
-    //      time: new Date().toISOString() 
-    // }
   }
 }
 
 async function createUser(data){
   const newUser = await model.createUser(data)
-  const userStr = JSON.stringify(newUser)
   return newUser
-  //  {
-  //     message: `User ${data.name} was created `,
-  //     newUser: `NewUser ${userStr}`,
-  //     time : new Date().toISOString()
-  // }
 }
-/////////////////////////////////////////
 async function deleteUser(data){
 
-  // console.log(data)
   const {deletedUser,newUsers} = await model.deleteUser(data)
 
   console.log(deletedUser)
   if(deletedUser){
-    //     let usersStr = JSON.stringify(users)
-    //  let resultStr = JSON.stringify(deletedUser)
-    return {
+    return{
       deletedUser,
       message:`User ${deletedUser}  was deleted`,
       newUsers:`NewUsers ${newUsers}`, 
@@ -63,10 +49,8 @@ async function deleteUser(data){
       time: new Date().toISOString()
     }}
 }
-////////////////////////////////////////
 async function updateUser(data){
   const updatedUser = await model.updateUser(data)
-  //  console.log(updatedUser)
   if(updatedUser){
     return{
       updatedUser,

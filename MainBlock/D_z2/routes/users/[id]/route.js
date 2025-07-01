@@ -3,7 +3,7 @@ import * as service from '../../../services/users.service.js'
 
 
 
-export async function userId(req,res){
+export default async (req,res)=>{
   let body = ''
   const id = path.parse(req.url).base
   const method = req.method
@@ -29,7 +29,6 @@ export async function userId(req,res){
 
     case 'DELETE':
       user = await service.deleteUser(data)
-      console.log(user)
       if(!user.deletedUser){statusCode = 404}
       break
 

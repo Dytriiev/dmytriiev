@@ -55,7 +55,7 @@ async function createUser(data){
   let newUser = {}
   if(!usersExist.length){
     newUser = {
-      id: '1',
+      id: 1,
       ...data
     }
         
@@ -77,13 +77,9 @@ async function getAllUsers() {
   return users
 }
 
-//////////////////////////////////////////////////////
+
 async function deleteUser(data) {
   const users = await read()
-  if(!users){return {
-    deleteUser: 'User not found',
-    newUsers:'Not found'
-  }}
   const deletedUser = users.find( user => user.id == data.id)
   if(!deletedUser){
     console.log('User not found')
@@ -95,7 +91,7 @@ async function deleteUser(data) {
     newUsers
   }
 }
-/////////////////////////////////////////////////
+
 async function updateUser(data) {
   if(!data){
     return {}
@@ -115,7 +111,7 @@ async function updateUser(data) {
   await writeFileUsers(users)
   return  updatedUser
 }   
-////////////////////////////////////////
+
 async function findUser(data){
   console.log(data)
   const users = await read()

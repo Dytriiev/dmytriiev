@@ -1,6 +1,6 @@
 import * as service from '../../services/users.service.js'
 
-export async function users(req,res){
+export default async function users(req,res){
   let body = ''
   req.on('data', chunk => body += chunk)
   req.on('end', async ()=> {
