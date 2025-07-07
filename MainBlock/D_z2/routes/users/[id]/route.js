@@ -1,19 +1,23 @@
+
 import path from 'node:path'
 import * as service from '../../../services/users.service.js'
 
-
-
-export default async (req,res)=>{
-  let body = ''
+export const GET = async (req, res) => {
   const id = path.parse(req.url).base
-  const method = req.method
-  let user = {}
   const data={ id }
-  let dataUpdata = {}
-  let statusCode = 200
+  const user = await service.getUserById(data)
 
+  res.writeHead(200,{'Content-Type': 'application/json'});
+  res.end(JSON.stringify(user))
+}
+
+export const PUT = async (req,res) => {
+
+  const id = path.parse(req.url).base
+  let body = ''
   req.on('data', chunk => body += chunk)
-  req.on('end', async ()=> {
+  req.on('end', async () => {
+    let dataUpdata = {}
     if(body){
       const bodyParse = JSON.parse(body)
       dataUpdata = {
@@ -21,28 +25,26 @@ export default async (req,res)=>{
         ...bodyParse
       }
     }
-        
-    switch(method){
-    case 'GET':
-      user = await service.getUserById(data)
-      break
-
-    case 'DELETE':
-      user = await service.deleteUser(data)
-      if(!user.deletedUser){statusCode = 404}
-      break
-
-    case 'PATCH':
-      user = await service.updateUser(dataUpdata) 
-      if(!user.updatedUser){statusCode = 404} 
-      //  console.log(user)
-      break
-    default :
-      statusCode = 405
-         
+    const user = await service.updateUser(dataUpdata)
+    if(!user.updatedUser){
+      res.statusCode = 404
+      res.end('user not found')
     }
-
-    res.writeHead(statusCode,{'Content-Type': 'application/json'});
-    res.end(JSON.stringify(user))
+    
+    res.writeHead(200,{'Content-Type': 'application/json'});
+    res.end(JSON.stringify(user.updatedUser))
   })
-};
+}
+
+
+export const DELETE = async (req,res) => {
+  const id = path.parse(req.url).base
+  const data={ id }
+  const  user = await service.deleteUser(data)
+  if(!user.deletedUser){
+    res.end('user not found')
+  }
+  res.end(JSON.stringify(user.deletedUser)) 
+}
+
+

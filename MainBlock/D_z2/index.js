@@ -1,6 +1,7 @@
 import { createServer } from 'node:http'
-import {router} from './lib/router.js'
+// import {router} from './lib/router.js'
 import dotenv from 'dotenv'
+import{router} from './lib/router.js'
 dotenv.config()
 
 const server = createServer((req,res)=>{
