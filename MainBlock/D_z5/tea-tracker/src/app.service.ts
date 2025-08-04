@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { nanoid } from 'nanoid';
 import { GetTeaDto, PaginateQuery, ResPag, TeaDto } from './dto';
 import { Tea } from './entities';
 import { Select} from './shared/select'
@@ -54,7 +53,7 @@ export class BrewModel {
 
   //    tea
   create(body: TeaDto) {
-    const id = nanoid(6);
+    const id = Date.now().toString();
     const result = { ...body, id };
     this.#store.set(id, result);
     console.log(result);
