@@ -8,7 +8,7 @@ import { Worker } from 'worker_threads';
 import { availableParallelism } from 'node:os';
 
 @Injectable()
-export class AppService {
+export class FileService {
   async upload(file: Express.Multer.File) {
     const uploadDir: string = path.join(__dirname, '..', 'temp');
     const outloadDir: string = path.join(__dirname, '..', 'outLoad');
@@ -28,58 +28,20 @@ export class AppService {
     const processedShared = new SharedArrayBuffer(4); // 4 байти = Int32
     const processed = new Int32Array(processedShared);
 
-    const res: Array<PromiseSettledResult<any>> = [];
-    try {
-      const start = performance.now();
-      for (let i = 0; i < fileList.length; i += workers) {
-        const fileGroup = fileList.slice(i, i + workers);
-        console.log('fileGroup', fileGroup);
-        const filePromices = fileGroup.map((f) =>
-          this.processFile(
-            f,
-            outloadDir,
-            processedShared,
-            skippedShared,
-            processed,
-            skipped,
-          ),
-        );
-        // console.log('filePromices:', filePromices);
-        res.push(...(await Promise.allSettled(filePromices)));
+    const pendingWorkers: Promise<any>[] = [];
+    const start = performance.now();
+    for (const f of fileList) {
+      if (pendingWorkers.length >= workers) {
+        await Promise.race(pendingWorkers);
       }
-      // console.log('RESULT:', processed, skipped);
-      const durationMs = performance.now() - start;
-      await fs.rm(uploadDir, { recursive: true });
 
-      console.log('res', res);
-      return {
-        processed: processed[0],
-        skipped: skipped[0],
-        durationMs: durationMs,
-      };
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async processFile(
-    filePath: string,
-    outloadDir: string,
-    processedShared: SharedArrayBuffer,
-    skippedShared: SharedArrayBuffer,
-    processed: Int32Array<SharedArrayBuffer>,
-    skipped: Int32Array<SharedArrayBuffer>,
-  ): Promise<any> {
-    try {
-      const fileName = path.basename(filePath);
+      const fileName = path.basename(f);
       const outputPath = path.join(outloadDir, fileName);
-
-      return new Promise((resolve) => {
-        console.log('new Promise');
+      const filePromise = new Promise((resolve) => {
         const worker = new Worker('./src/worker.js', {
           workerData: {
             name: 'Den',
-            buffer: filePath,
+            buffer: f,
             outputPath: outputPath,
             processedShared,
             skippedShared,
@@ -87,16 +49,21 @@ export class AppService {
           },
         });
         console.log('workerThreadId:', worker.threadId);
-        // worker.on('message', resolve);
         worker.on('exit', () => {
           console.log('exit', processed, skipped, worker.threadId);
           resolve(worker.threadId);
         });
         worker.on('error', (err) => resolve({ error: err.message }));
       });
-    } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      return { error: err.message };
+      pendingWorkers.push(filePromise);
     }
+    await Promise.allSettled(pendingWorkers);
+    const durationMs = performance.now() - start;
+    await fs.rm(uploadDir, { recursive: true });
+    return {
+      processed: processed[0],
+      skipped: skipped[0],
+      durationMs,
+    };
   }
 }

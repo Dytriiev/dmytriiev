@@ -1,9 +1,7 @@
 import { workerData, parentPort } from 'node:worker_threads';
 import { Mutex } from 'async-mutex';
 import sharp from 'sharp';
-// const { parentPort, workerData } = require('worker_threads');
-// const sharp = require('sharp');
-// const  Mutex = require('acync-mutex')
+import { promises as fs } from 'fs';
 
 
 const mutex = new Mutex();
@@ -14,26 +12,26 @@ const skipped = new Int32Array(workerData.skippedShared)
 try {
   console.log(`[${new Date().toISOString()}] Воркер стартовал`, workerData.fileName);
     console.log('worker', workerData.name)
-// console.log('workerBuffer', workerData.buffer)
-// console.log('outputPath', workerData.outputPath)
-// console.log('processed', workerData.processedShared)
-// const processed = new Int32Array(workerData.processedShared);
-// console.log('processed', processed)
-await createThumbnail(workerData.buffer, workerData.outputPath)
-const current = processed[0]
-processed[0] = current + 1
+const fileBuffer = await fs.readFile(workerData.buffer)
+await createThumbnail(fileBuffer, workerData.outputPath)
+// const current = processed[0]
+// processed[0] = current + 1
+///
+Atomics.add(processed, 0, 1);
 } 
 catch{
   // const skipped = new Int32Array(workerData.skippedShared)
-  const current = skipped[0]
-  skipped[0]= current + 1
+  // const current = skipped[0]
+  // skipped[0]= current + 1
+  //
+  Atomics.add(skipped, 0, 1);
 }
 finally {
   const result = {
     processed,
     skipped,
   }
-  parentPort.postMessage(result); 
+  // parentPort.postMessage(result); 
   console.log('finally:')
     release();
 }
