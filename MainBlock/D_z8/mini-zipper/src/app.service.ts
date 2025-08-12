@@ -9,19 +9,22 @@ import { availableParallelism } from 'node:os';
 
 @Injectable()
 export class AppService {
-  async upload(file: Express.Multer.File) {
+  async upload(filesZipArr: Array<Express.Multer.File>) {
     const uploadDir: string = path.join(__dirname, '..', 'temp');
     const outloadDir: string = path.join(__dirname, '..', 'outLoad');
     await fs.mkdir(uploadDir, { recursive: true });
     await fs.mkdir(outloadDir, { recursive: true });
 
     const workers = availableParallelism();
-
-    const zip: AdmZip = new AdmZip(file.buffer);
-    zip.extractAllTo(uploadDir, true);
-    const fileList = (await fs.readdir(uploadDir)).map((f) =>
-      path.join(uploadDir, f),
-    );
+    for (const file of filesZipArr) {
+      const zip: AdmZip = new AdmZip(file.buffer);
+      zip.extractAllTo(uploadDir, true);
+    }
+    const fileList = (
+      await fs.readdir(uploadDir, { recursive: true, withFileTypes: true })
+    )
+      .filter((dirent) => dirent.isFile())
+      .map((dirent) => path.join(dirent.parentPath, dirent.name));
     // console.log(fileList);
     const skippedShared = new SharedArrayBuffer(4);
     const skipped = new Int32Array(skippedShared);
@@ -33,10 +36,10 @@ export class AppService {
       const start = performance.now();
       for (let i = 0; i < fileList.length; i += workers) {
         const fileGroup = fileList.slice(i, i + workers);
-        console.log('fileGroup', fileGroup);
-        const filePromices = fileGroup.map((f) =>
+        // console.log('fileGroup', fileGroup);
+        const filePromices = fileGroup.map((filePath) =>
           this.processFile(
-            f,
+            filePath,
             outloadDir,
             processedShared,
             skippedShared,
@@ -51,7 +54,7 @@ export class AppService {
       const durationMs = performance.now() - start;
       await fs.rm(uploadDir, { recursive: true });
 
-      console.log('res', res);
+      // console.log('res', res);
       return {
         processed: processed[0],
         skipped: skipped[0],
@@ -79,7 +82,7 @@ export class AppService {
         const worker = new Worker('./src/worker.js', {
           workerData: {
             name: 'Den',
-            buffer: filePath,
+            filePath: filePath,
             outputPath: outputPath,
             processedShared,
             skippedShared,

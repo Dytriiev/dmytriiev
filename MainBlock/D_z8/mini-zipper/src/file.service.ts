@@ -9,7 +9,7 @@ import { availableParallelism } from 'node:os';
 
 @Injectable()
 export class FileService {
-  async upload(file: Express.Multer.File) {
+  async upload(filesZipArr: Express.Multer.File[]) {
     const uploadDir: string = path.join(__dirname, '..', 'temp');
     const outloadDir: string = path.join(__dirname, '..', 'outLoad');
     await fs.mkdir(uploadDir, { recursive: true });
@@ -17,11 +17,16 @@ export class FileService {
 
     const workers = availableParallelism();
 
-    const zip: AdmZip = new AdmZip(file.buffer);
-    zip.extractAllTo(uploadDir, true);
-    const fileList = (await fs.readdir(uploadDir)).map((f) =>
-      path.join(uploadDir, f),
-    );
+    for (const file of filesZipArr) {
+      const zip: AdmZip = new AdmZip(file.buffer);
+      zip.extractAllTo(uploadDir, true);
+    }
+    const fileList = (
+      await fs.readdir(uploadDir, { recursive: true, withFileTypes: true })
+    )
+      .filter((dirent) => dirent.isFile())
+      .map((dirent) => path.join(dirent.parentPath, dirent.name));
+
     // console.log(fileList);
     const skippedShared = new SharedArrayBuffer(4);
     const skipped = new Int32Array(skippedShared);
@@ -30,18 +35,18 @@ export class FileService {
 
     const pendingWorkers: Promise<any>[] = [];
     const start = performance.now();
-    for (const f of fileList) {
+    for (const filePath of fileList) {
       if (pendingWorkers.length >= workers) {
         await Promise.race(pendingWorkers);
       }
 
-      const fileName = path.basename(f);
+      const fileName = path.basename(filePath);
       const outputPath = path.join(outloadDir, fileName);
       const filePromise = new Promise((resolve) => {
         const worker = new Worker('./src/worker.js', {
           workerData: {
             name: 'Den',
-            buffer: f,
+            filePath: filePath,
             outputPath: outputPath,
             processedShared,
             skippedShared,

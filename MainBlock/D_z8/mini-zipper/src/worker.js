@@ -11,8 +11,9 @@ const skipped = new Int32Array(workerData.skippedShared)
 
 try {
   console.log(`[${new Date().toISOString()}] Воркер стартовал`, workerData.fileName);
-    console.log('worker', workerData.name)
-const fileBuffer = await fs.readFile(workerData.buffer)
+    console.log('worker', workerData.filePath)
+const fileBuffer = await fs.readFile(workerData.filePath)
+// console.log('buffer: ', fileBuffer)
 await createThumbnail(fileBuffer, workerData.outputPath)
 // const current = processed[0]
 // processed[0] = current + 1
