@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as AdmZip from 'adm-zip';
 import { Worker } from 'worker_threads';
 import { availableParallelism } from 'node:os';
+import { DataProcess } from './data.process.js';
 
 @Injectable()
 export class FileService {
@@ -26,12 +27,19 @@ export class FileService {
     )
       .filter((dirent) => dirent.isFile())
       .map((dirent) => path.join(dirent.parentPath, dirent.name));
-
     // console.log(fileList);
+
     const skippedShared = new SharedArrayBuffer(4);
     const skipped = new Int32Array(skippedShared);
     const processedShared = new SharedArrayBuffer(4); // 4 байти = Int32
     const processed = new Int32Array(processedShared);
+    ///////////////////////////
+    const dataProcessBuffer = new SharedArrayBuffer(8);
+    const sharedState = { process: 0, skipped: 0 };
+    const bufferDataInt = new Int32Array(dataProcessBuffer, 0, 2);
+    const dataProcess = new DataProcess(bufferDataInt, sharedState);
+    console.log('dataProcess', dataProcess.state);
+    //////////////////////////
 
     const pendingWorkers: Promise<any>[] = [];
     const start = performance.now();
@@ -42,20 +50,39 @@ export class FileService {
 
       const fileName = path.basename(filePath);
       const outputPath = path.join(outloadDir, fileName);
+      const workerPath = path.join(__dirname, 'worker_2.js');
       const filePromise = new Promise((resolve) => {
-        const worker = new Worker('./src/worker.js', {
+        // const worker = new Worker('./src/worker.js', {
+        //   workerData: {
+        //     name: 'Den',
+        //     filePath: filePath,
+        //     outputPath: outputPath,
+        //     processedShared,
+        //     skippedShared,
+        //     fileName,
+        //   },
+        // });
+        ///////////////////////////////////////
+        const worker = new Worker(workerPath, {
           workerData: {
             name: 'Den',
             filePath: filePath,
             outputPath: outputPath,
+            bufferDataInt: bufferDataInt,
+            dataProcessBuffer,
+            fileName,
             processedShared,
             skippedShared,
-            fileName,
           },
         });
+        /////////////////////////////////////////////////
         console.log('workerThreadId:', worker.threadId);
-        worker.on('exit', () => {
-          console.log('exit', processed, skipped, worker.threadId);
+        const id = worker.threadId;
+        // worker.on('message', (msg) => {
+        //   console.log(msg);
+        // });
+        worker.on('exit', (code) => {
+          console.log('exit', id, fileName, code);
           resolve(worker.threadId);
         });
         worker.on('error', (err) => resolve({ error: err.message }));
@@ -69,6 +96,10 @@ export class FileService {
       processed: processed[0],
       skipped: skipped[0],
       durationMs,
+      ////////////////////////////
+      processed_1: bufferDataInt[0],
+      skipped_2: bufferDataInt[1],
+      ////////////////////////////
     };
   }
 }
