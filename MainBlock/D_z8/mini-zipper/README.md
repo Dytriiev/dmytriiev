@@ -58,3 +58,7 @@ Nest js додае складнощів при віборі імен файлі�
 
 Іnterface SharedState { processed: number; skipped: number }
 const state: SharedState = { processed: 0, skipped: 0 };
+файл file.service в зьєднанні з worker_2.ts не запускають sharp і всі skipped = 40.
+класс DataProcess рахує щось незрозуміле. Виправити не вдалось.
+
+#6. Оброблені файли зберігаються в outLoad.

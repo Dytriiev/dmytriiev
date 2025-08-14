@@ -29,14 +29,14 @@ async function Work() {
     // const current = processed[0]
     // processed[0] = current + 1
     ///
-    // dataProcess.addProcess();
+    dataProcess.addProcess();
     Atomics.add(processed, 0, 1);
   } catch {
     // const skipped = new Int32Array(workerData.skippedShared)
     // const current = skipped[0]
     // skipped[0]= current + 1
     //
-    // dataProcess.addSkipped();
+    dataProcess.addSkipped();
     Atomics.add(skipped, 0, 1);
   } finally {
     const result = {
