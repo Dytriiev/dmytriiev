@@ -12,7 +12,7 @@ import pLimit from 'p-limit';
 export class LimitService {
   async upload(filesZipArr: Express.Multer.File[]) {
     const uploadDir = path.join(__dirname, '..', 'temp');
-    const outloadDir = path.join(__dirname, '..', 'outload');
+    const outloadDir = path.join(__dirname, '..', 'outLoad');
     await fs.mkdir(uploadDir, { recursive: true });
     await fs.mkdir(outloadDir, { recursive: true });
     for (const file of filesZipArr) {

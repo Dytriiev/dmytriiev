@@ -46,19 +46,19 @@ $ npm run start:prod
 
 #1. Запит Post робиться на http://localhost:3000/zip . Можливо одночасно завантажувати декілька zip файлів. 
 
-#2. Зробив 3 файлі app.service.ts , file.service.ts, limit.service.ts тому , що не знаю як краще викликати воркери . По часу всі працюют приблизно однаково.
+#2. Зробив 2 файлі app.service.ts , limit.service.ts тому , що не знаю як краще викликати воркери . По часу всі працюют приблизно однаково. limit.service.ts використовуе пакет:
+"p-limit": "^6.2.0",
 
-#3. Не зміг справитись з помилкою типизаціі , або типу файла worker.js, тому що 
-Nest js додае складнощів при віборі імен файлів, а воркер не викликался при виконанні
-вімог Nest js.
+#3. Тестував в Postman. 
 
-#4. Тестував в Postman. 
-
-#5. Не зміг скористуватись 
+#4. Не зміг скористуватись 
 
 Іnterface SharedState { processed: number; skipped: number }
 const state: SharedState = { processed: 0, skipped: 0 };
-файл file.service в зьєднанні з worker_2.ts не запускають sharp і всі skipped = 40.
-класс DataProcess рахує щось незрозуміле. Виправити не вдалось.
 
-#6. Оброблені файли зберігаються в outLoad.
+Файл file.service в зьєднанні з worker_2.ts і data.process.ts не запускають sharp і всі skipped = 40.
+Виправити не вдалось.
+
+#5. Оброблені файли зберігаються в outLoad.
+#6. Яка користь від const mutex = new Mutex(); при використанні Atomics.add(processed, 0, 1);
+не знаю.

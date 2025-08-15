@@ -1,21 +1,21 @@
 import { workerData, parentPort } from 'node:worker_threads';
-import { Mutex } from 'async-mutex';
+import { Mutex, MutexInterface } from 'async-mutex';
 import sharp from 'sharp';
 import { promises as fs } from 'fs';
 import { DataProcess } from './data.process';
 
+const mutex = new Mutex();
+
 async function Work() {
-  const mutex = new Mutex();
   const release = await mutex.acquire();
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const processed = new Int32Array(workerData.processedShared);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const skipped = new Int32Array(workerData.skippedShared);
-  const sharedState = { process: 0, skipped: 0 };
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const dataProcessBufferInt = new Int32Array(workerData.dataProcessBuffer);
+  const dataProcessBufferInt = new Int16Array(workerData.dataProcessBuffer);
 
-  const dataProcess = new DataProcess(dataProcessBufferInt, sharedState);
+  const dataProcess = new DataProcess(dataProcessBufferInt);
   try {
     console.log(
       `[${new Date().toISOString()}] Воркер стартовал`,
@@ -40,20 +40,20 @@ async function Work() {
     Atomics.add(skipped, 0, 1);
   } finally {
     const result = {
-      processed,
-      skipped,
+      processed: dataProcess.processed,
+      skipped: dataProcess.skipped,
     };
-    // parentPort.postMessage(result);
+    parentPort?.postMessage(result);
     console.log('finally:');
     release();
   }
 }
 
 // Создание thumbnail с сохранением пропорций
-async function createThumbnail(sharedArray, outputPath) {
-  console.log('outPutPath: ', workerData.outputPath);
-  console.log('sharedArray:', sharedArray);
-  await sharp(sharedArray)
+async function createThumbnail(fileBuffer: Buffer, outputPath: string) {
+  console.log('outPutPath: ', outputPath);
+  console.log('fileBuffer:', fileBuffer);
+  await sharp(fileBuffer)
     .resize(150, 150, {
       fit: 'inside',
       withoutEnlargement: true,

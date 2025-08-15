@@ -39,8 +39,8 @@ finally {
 
 
 // Создание thumbnail с сохранением пропорций
-async function createThumbnail(sharedArray,  outputPath){
-  await sharp(sharedArray)
+async function createThumbnail(fileBuffer,  outputPath){
+  await sharp(fileBuffer)
     .resize(150, 150, {
       fit: 'inside',
       withoutEnlargement: true

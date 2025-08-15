@@ -1,18 +1,17 @@
 export interface SharedState {
-  process: number;
+  processed: number;
   skipped: number;
 }
 
 export class DataProcess {
-  bufferData: Int32Array;
-  state: SharedState;
-  constructor(bufferData: Int32Array, state: SharedState) {
+  bufferData: Int16Array;
+  // state: SharedState;
+  constructor(bufferData: Int16Array) {
     this.bufferData = bufferData;
-    this.state = state;
-    this.bufferData[0] = this.state.process;
-    this.bufferData[1] = this.state.skipped;
+    // this.bufferData[0] = state.processed;
+    // this.bufferData[1] = state.skipped;
   }
-  get process(): number {
+  get processed(): number {
     return Atomics.load(this.bufferData, 0);
   }
   get skipped(): number {

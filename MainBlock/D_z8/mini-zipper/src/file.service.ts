@@ -34,11 +34,11 @@ export class FileService {
     const processedShared = new SharedArrayBuffer(4); // 4 байти = Int32
     const processed = new Int32Array(processedShared);
     ///////////////////////////
-    const dataProcessBuffer = new SharedArrayBuffer(8);
-    const sharedState = { process: 0, skipped: 0 };
-    const bufferDataInt = new Int32Array(dataProcessBuffer, 0, 2);
-    const dataProcess = new DataProcess(bufferDataInt, sharedState);
-    console.log('dataProcess', dataProcess.state);
+    const dataProcessBuffer = new SharedArrayBuffer(4);
+    // const sharedState = { processed: 0, skipped: 0 };
+    const bufferDataInt = new Int16Array(dataProcessBuffer, 0, 2);
+    const dataProcess = new DataProcess(bufferDataInt);
+    console.log('dataProcess', dataProcess);
     //////////////////////////
 
     const pendingWorkers: Promise<any>[] = [];
@@ -68,7 +68,7 @@ export class FileService {
             name: 'Den',
             filePath: filePath,
             outputPath: outputPath,
-            bufferDataInt: bufferDataInt,
+
             dataProcessBuffer,
             fileName,
             processedShared,
@@ -81,6 +81,11 @@ export class FileService {
         // worker.on('message', (msg) => {
         //   console.log(msg);
         // });
+        worker.on('message', (msg) => {
+          console.log('message', msg);
+          resolve(worker.threadId);
+        });
+
         worker.on('exit', (code) => {
           console.log('exit', id, fileName, code);
           resolve(worker.threadId);
