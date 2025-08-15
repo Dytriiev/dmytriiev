@@ -1,8 +1,8 @@
 export class Tea {
   id: string;
   name: string;
-  Rating?: number;
+  rating?: number;
   origin: string;
-  brewtemp?: number;
+  brewTemp?: number;
   notes?: string;
 }

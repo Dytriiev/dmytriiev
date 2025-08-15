@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { GetTeaDto, PaginateQuery, ResPag, TeaDto } from './dto';
+import { GetTeaDto, PaginateQuery, PaginatedResponse, TeaDto } from './dto';
 import { Tea } from './entities';
 import { Select} from './shared/select'
 // import { PaginateQuery } from 'nestjs-paginate';
@@ -11,9 +11,16 @@ export class BrewModel {
   get(query?: PaginateQuery) {
     const brews = Array.from(this.#store.values());
     console.log('Brews:', brews);
-    const resPag: ResPag = {};
-    if (!brews) {
-      return (resPag.data = []);
+    const resPag: PaginatedResponse = {
+      data: [],
+      meta: {
+        total: 0,
+        page: 0,
+        limit: 0,
+      }
+    };
+    if (!brews.length) {
+      return resPag;
     }
 
     console.log('query:', query);
@@ -25,10 +32,14 @@ export class BrewModel {
         page: 0,
         limit: 0,
       };
+      return resPag;
     } else if ( query.limit && query.page) {
       return Select(query,brews,resPag)
+    } else if(query.minRating) {
+      resPag.data = brews.filter(brew => brew.rating && brew.rating >= + query.minRating!)
+      return resPag
     }
-    return resPag;
+    
   }
 
   //  tea/:id

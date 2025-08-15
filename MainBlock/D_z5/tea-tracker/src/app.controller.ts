@@ -13,7 +13,7 @@ import {
   BrewDTOSchema,
   GetTeaDto,
   PaginateQuery,
-  ResPag,
+  PaginatedResponse,
   TeaDto,
   UpdateDTO,
   UpdateDTOSchema,
@@ -34,7 +34,7 @@ export class AppController {
   @Public()
   @Get()
   @ApiCreatedResponse({
-    type: ResPag,
+    type: PaginatedResponse,
   })
   @ApiOperation({ summary: 'Get paginated brews with filtering' })
   @ApiQuery({

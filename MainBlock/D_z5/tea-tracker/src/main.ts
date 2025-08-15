@@ -6,9 +6,27 @@ import { AuthGuard } from './guards/auth.guard';
 import { DateInterceptor } from './interceptors/date.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const config = new DocumentBuilder().setTitle('Api').build();
+  const config = new DocumentBuilder().setTitle('Api')
+  .setTitle('Api')
+  .build();
 
   const document = SwaggerModule.createDocument(app, config);
+  if (!document.components) {
+  document.components = {};
+}
+ document.components = {
+    ...document.components,
+    securitySchemes: {
+      'x-api-key': {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-api-key',
+        description: 'Введите API ключ',
+      },
+    },
+  };
+
+   document.security = [{ 'x-api-key': [] }];
   SwaggerModule.setup('docs', app, document);
   app.useGlobalGuards(new AuthGuard( new Reflector()))
   app.useGlobalPipes(new ValidationPipe());

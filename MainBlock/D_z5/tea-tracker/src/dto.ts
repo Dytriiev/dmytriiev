@@ -10,13 +10,13 @@ export const BrewDTOSchema = z.object({
     .max(10, 'Назва  не повинна перевищувати 40 символів'),
   origin: z.string().min(2, 'min 2').max(10, 'max 10'),
 
-  Rating: z
+  rating: z
     .number()
     .min(1, 'Мінімальна оцінка - 1')
     .max(10, 'Максимальна оцінка - 10')
     .optional(),
 
-  brewtemp: z.number().min(60, 'min 60').max(100, 'max 100').optional(),
+  brewTemp: z.number().min(60, 'min 60').max(100, 'maxTemp 100').optional(),
 
   notes: z
     .string()
@@ -47,7 +47,7 @@ export class TeaDto implements BrewDTO {
   @IsInt({ message: 'Рейтинг має бути цілим числом' })
   @Min(1, { message: 'Рейтинг мае бути не меньше 1' })
   @Max(10, { message: 'Рейтинг має бути не більше 10' })
-  Rating?: number;
+  rating?: number;
 
   @ApiPropertyOptional({
     example: '90',
@@ -56,7 +56,7 @@ export class TeaDto implements BrewDTO {
   @IsInt({ message: 'Температура має бути цілим числом' })
   @Min(60, { message: 'Температура мае бути не меньше 60' })
   @Max(100, { message: 'Температура має бути не більше 100' })
-  brewtemp?: number;
+  brewTemp?: number;
 
   @ApiPropertyOptional({
     example: 'Very good',
@@ -85,7 +85,7 @@ export class GetTeaDto extends Tea {
     maximum: 5,
     nullable: true,
   })
-  declare Rating?: number;
+  declare rating?: number;
 
   @ApiProperty({
     example: 'Китай',
@@ -100,7 +100,7 @@ export class GetTeaDto extends Tea {
     maximum: 100,
     nullable: true,
   })
-  declare brewtemp?: number;
+  declare brewTemp?: number;
 
   @ApiPropertyOptional({
     example: 'Лучший чай для утра',
@@ -122,7 +122,7 @@ export class PaginateQuery {
   limit?: string;
 }
 
-export class ResPag {
+export class PaginatedResponse {
   @ApiProperty()
   data?: GetTeaDto[];
   @ApiProperty()

@@ -13,8 +13,8 @@ export const ZBody = (schema: z.ZodSchema) => {
     const result = schema.safeParse(request.body);
 
     if (!result.success) {
-      const errRes: string[] = [];
-      result.error.issues.map((iss) => errRes.push(iss.message));
+      const errRes: string[] = result.error.issues.map((iss) => iss.message); ;
+     
       throw new BadRequestException(JSON.stringify(errRes));
     }
 

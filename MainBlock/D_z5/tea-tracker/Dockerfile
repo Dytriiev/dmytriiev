@@ -23,7 +23,6 @@ FROM gcr.io/distroless/nodejs20-debian11:nonroot
 WORKDIR /app
 
 # 5. Копируем только необходимое
-COPY --from=builder --chown=nonroot:nonroot /app/package*.json ./
 COPY --from=builder --chown=nonroot:nonroot /app/node_modules ./node_modules
 COPY --from=builder --chown=nonroot:nonroot /app/dist ./dist
 
