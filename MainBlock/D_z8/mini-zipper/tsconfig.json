@@ -22,5 +22,5 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.js" 
-, "src/worker_2.ts"  ]
+, "src/worker_2.ts", "workers/src/data.process.ts"  ]
 }

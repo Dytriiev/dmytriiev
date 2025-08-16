@@ -1,0 +1,9 @@
+{
+  "name": "workers",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "dependencies": {
+    "sharp": "^0.32.0",
+    "async-mutex": "^0.3.2"
+  }
+}

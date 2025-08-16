@@ -43,6 +43,8 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+# 0. npm run build:workers
+Для побудови workers/dist.
 
 #1. Запит Post робиться на http://localhost:3000/zip . Можливо одночасно завантажувати декілька zip файлів. 
 
@@ -55,10 +57,6 @@ $ npm run start:prod
 
 Іnterface SharedState { processed: number; skipped: number }
 const state: SharedState = { processed: 0, skipped: 0 };
-#5. Можно не дивитись:
-Файл file.service це єксперімент поєднати ts nest і воркер. Він працюе але лише з 
-const sharp = require('sharp'); тому що з import sharp from 'sharp'; не працюе,
-в dist збираются різні файли в залежності від імпортів.
 
 #5. Оброблені файли зберігаються в outLoad.
 #6. Яка користь від const mutex = new Mutex(); при використанні Atomics.add(processed, 0, 1);

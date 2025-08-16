@@ -76,9 +76,10 @@ export class AppService {
     try {
       const fileName = path.basename(filePath);
       const outputPath = path.join(outloadDir, fileName);
-
+      const workerPath = path.join('./src/worker.js');
       return new Promise((resolve) => {
         console.log('new Promise');
+        console.log('WorkerPath:', workerPath);
         const worker = new Worker('./src/worker.js', {
           workerData: {
             name: 'Den',

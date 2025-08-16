@@ -1,10 +1,10 @@
 import { workerData, parentPort } from 'node:worker_threads';
 import { Mutex, MutexInterface } from 'async-mutex';
-// import sharp from 'sharp';
+import sharp from 'sharp';
 import { promises as fs } from 'fs';
 import { DataProcess } from './data.process';
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
-const sharp = require('sharp');
+// const sharp = require('sharp');
 const mutex = new Mutex();
 
 async function Work() {

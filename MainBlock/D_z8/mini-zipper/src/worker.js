@@ -1,7 +1,11 @@
 import { workerData, parentPort } from 'node:worker_threads';
-import { Mutex } from 'async-mutex';
+import { Mutex } from 'async-mutex'
 import sharp from 'sharp';
 import { promises as fs } from 'fs';
+// const { workerData } = require('node:worker_threads');
+// const { Mutex } = require('async-mutex');
+// const { sharp } = require('sharp');
+// const { fs } = require('node:fs/promises')
 
 
 const mutex = new Mutex();
