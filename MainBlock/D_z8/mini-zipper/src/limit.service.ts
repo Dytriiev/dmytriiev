@@ -11,8 +11,9 @@ import pLimit from 'p-limit';
 @Injectable()
 export class LimitService {
   async upload(filesZipArr: Express.Multer.File[]) {
-    const uploadDir = path.join(__dirname, '..', 'temp');
-    const outloadDir = path.join(__dirname, '..', 'outLoad');
+    const projectRoot = process.cwd();
+    const uploadDir = path.join(projectRoot, 'temp');
+    const outloadDir = path.join(projectRoot, 'outLoad');
     await fs.mkdir(uploadDir, { recursive: true });
     await fs.mkdir(outloadDir, { recursive: true });
     for (const file of filesZipArr) {
@@ -64,8 +65,9 @@ export class LimitService {
   ) {
     const fileName = path.basename(filePath);
     const outputPath = path.join(outloadDir, fileName);
+    const workerPath = path.join(__dirname, '../../workers/dist/worker.js');
     return new Promise((resolve) => {
-      const worker = new Worker('./src/worker.js', {
+      const worker = new Worker(workerPath, {
         workerData: {
           name: 'Den',
           filePath: filePath,

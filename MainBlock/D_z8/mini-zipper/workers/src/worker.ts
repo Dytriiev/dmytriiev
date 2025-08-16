@@ -2,13 +2,10 @@ import { workerData, parentPort } from 'node:worker_threads';
 import { Mutex } from 'async-mutex'
 import sharp from 'sharp';
 import { promises as fs } from 'fs';
-// const { workerData } = require('node:worker_threads');
-// const { Mutex } = require('async-mutex');
-// const { sharp } = require('sharp');
-// const { fs } = require('node:fs/promises')
 
 
 const mutex = new Mutex();
+async function Work() {
 const release = await mutex.acquire();
 const processed = new Int32Array(workerData.processedShared);
 const skipped = new Int32Array(workerData.skippedShared)
@@ -39,11 +36,12 @@ finally {
   // parentPort.postMessage(result); 
   console.log('finally:')
     release();
+ }
 }
 
 
 // Создание thumbnail с сохранением пропорций
-async function createThumbnail(fileBuffer,  outputPath){
+async function createThumbnail(fileBuffer: Buffer,  outputPath: string){
   await sharp(fileBuffer)
     .resize(150, 150, {
       fit: 'inside',
@@ -52,4 +50,5 @@ async function createThumbnail(fileBuffer,  outputPath){
     .jpeg({ quality: 90 })
     .toFile(outputPath);
 };
+Work()
 

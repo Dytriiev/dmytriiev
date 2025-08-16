@@ -10,8 +10,10 @@ import { availableParallelism } from 'node:os';
 @Injectable()
 export class AppService {
   async upload(filesZipArr: Array<Express.Multer.File>) {
-    const uploadDir: string = path.join(__dirname, '..', 'temp');
-    const outloadDir: string = path.join(__dirname, '..', 'outLoad');
+    const projectRoot = process.cwd();
+    const uploadDir: string = path.join(projectRoot, 'temp');
+    console.log('uploadDir:', uploadDir);
+    const outloadDir: string = path.join(projectRoot, 'outLoad');
     await fs.mkdir(uploadDir, { recursive: true });
     await fs.mkdir(outloadDir, { recursive: true });
 
@@ -76,11 +78,11 @@ export class AppService {
     try {
       const fileName = path.basename(filePath);
       const outputPath = path.join(outloadDir, fileName);
-      const workerPath = path.join('./src/worker.js');
+      const workerPath = path.join(__dirname, '../../workers/dist/worker.js');
       return new Promise((resolve) => {
         console.log('new Promise');
         console.log('WorkerPath:', workerPath);
-        const worker = new Worker('./src/worker.js', {
+        const worker = new Worker(workerPath, {
           workerData: {
             name: 'Den',
             filePath: filePath,

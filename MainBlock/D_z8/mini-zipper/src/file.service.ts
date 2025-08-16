@@ -11,8 +11,10 @@ import { DataProcess } from '../workers/src/data.process.js';
 @Injectable()
 export class FileService {
   async upload(filesZipArr: Express.Multer.File[]) {
-    const uploadDir: string = path.join(__dirname, '..', 'temp');
-    const outloadDir: string = path.join(__dirname, '..', 'outLoad');
+    const projectRoot = process.cwd();
+    const uploadDir = path.join(projectRoot, 'temp');
+    const outloadDir = path.join(projectRoot, 'outLoad');
+
     await fs.mkdir(uploadDir, { recursive: true });
     await fs.mkdir(outloadDir, { recursive: true });
 
@@ -78,7 +80,8 @@ export class FileService {
       });
       pendingWorkers.push(filePromise);
     }
-    await Promise.allSettled(pendingWorkers);
+    const result = await Promise.allSettled(pendingWorkers);
+    console.log('RESULT :', result);
     const durationMs = performance.now() - start;
     await fs.rm(uploadDir, { recursive: true });
     return {
