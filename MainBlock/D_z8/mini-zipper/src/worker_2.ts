@@ -1,9 +1,10 @@
 import { workerData, parentPort } from 'node:worker_threads';
 import { Mutex, MutexInterface } from 'async-mutex';
-import sharp from 'sharp';
+// import sharp from 'sharp';
 import { promises as fs } from 'fs';
 import { DataProcess } from './data.process';
-
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
+const sharp = require('sharp');
 const mutex = new Mutex();
 
 async function Work() {
@@ -62,3 +63,31 @@ async function createThumbnail(fileBuffer: Buffer, outputPath: string) {
     .toFile(outputPath);
 }
 Work();
+// в dist при разных импортах 1.import sharp from 'sharp'; не работает и
+// при 2.const sharp = require('sharp'); работает
+// 1. это в dist
+// const sharp_1 = require("sharp");
+// async function createThumbnail(fileBuffer, outputPath) {
+//     console.log('outPutPath: ', outputPath);
+//     console.log('fileBuffer:', fileBuffer);
+//     await (0, sharp_1.default)(fileBuffer)
+//         .resize(150, 150, {
+//         fit: 'inside',
+//         withoutEnlargement: true,
+//     })
+//         .jpeg({ quality: 90 })
+//         .toFile(outputPath);
+// }
+// 2. это в dist
+// const sharp = require('sharp');
+// async function createThumbnail(fileBuffer, outputPath) {
+//     console.log('outPutPath: ', outputPath);
+//     console.log('fileBuffer:', fileBuffer);
+//     await sharp(fileBuffer)
+//         .resize(150, 150, {
+//         fit: 'inside',
+//         withoutEnlargement: true,
+//     })
+//         .jpeg({ quality: 90 })
+//         .toFile(outputPath);
+// }

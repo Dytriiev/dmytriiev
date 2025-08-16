@@ -16,7 +16,7 @@ import { FileService } from './file.service';
 @Controller('zip')
 export class AppController {
   // constructor(private readonly appService: AppService) {}
-  constructor(private readonly appService: LimitService) {}
+  constructor(private readonly appService: AppService) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('files'))

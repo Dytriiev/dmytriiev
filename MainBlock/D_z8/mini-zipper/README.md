@@ -55,9 +55,10 @@ $ npm run start:prod
 
 Іnterface SharedState { processed: number; skipped: number }
 const state: SharedState = { processed: 0, skipped: 0 };
-
-Файл file.service в зьєднанні з worker_2.ts і data.process.ts не запускають sharp і всі skipped = 40.
-Виправити не вдалось.
+#5. Можно не дивитись:
+Файл file.service це єксперімент поєднати ts nest і воркер. Він працюе але лише з 
+const sharp = require('sharp'); тому що з import sharp from 'sharp'; не працюе,
+в dist збираются різні файли в залежності від імпортів.
 
 #5. Оброблені файли зберігаються в outLoad.
 #6. Яка користь від const mutex = new Mutex(); при використанні Atomics.add(processed, 0, 1);
