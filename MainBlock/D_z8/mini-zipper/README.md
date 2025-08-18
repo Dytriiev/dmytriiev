@@ -43,8 +43,8 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
-# 0. npm run build:workers
-Для побудови workers/dist.
+# 0. npm run build:workers Для побудови workers/dist.
+
 
 #1. Запит Post робиться на http://localhost:3000/zip . Можливо одночасно завантажувати декілька zip файлів. 
 
