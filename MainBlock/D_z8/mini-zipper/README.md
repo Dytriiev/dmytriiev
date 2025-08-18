@@ -53,6 +53,7 @@ $ npm run start:prod
 
 #3. Тестував в Postman. 
 
-#5. Оброблені файли зберігаються в outLoad.
-#6. Яка користь від const mutex = new Mutex(); при використанні Atomics.add(processed, 0, 1);
+#4. Оброблені файли зберігаються в outLoad.
+
+#5. Яка користь від const mutex = new Mutex(); при використанні Atomics.add(processed, 0, 1);
 не знаю.
