@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as AdmZip from 'adm-zip';
 import { Worker } from 'worker_threads';
 import { availableParallelism } from 'node:os';
-import { DataProcess } from '../workers/src/data.process.js';
+import { DataProcess, SharedState } from '../workers/src/data.process.js';
 
 @Injectable()
 export class FileService {
@@ -37,7 +37,7 @@ export class FileService {
 
     const dataProcessBuffer = new SharedArrayBuffer(4);
     const bufferDataInt = new Int16Array(dataProcessBuffer, 0, 2);
-    const dataProcess = new DataProcess(bufferDataInt);
+    const dataProcess: DataProcess = new DataProcess(dataProcessBuffer);
     console.log('dataProcess', dataProcess);
 
     const pendingWorkers: Promise<any>[] = [];
@@ -54,7 +54,6 @@ export class FileService {
         console.log('WorkerPath: ', workerPath);
         const worker = new Worker(workerPath, {
           workerData: {
-            name: 'Den',
             filePath: filePath,
             outputPath: outputPath,
 
@@ -80,8 +79,8 @@ export class FileService {
       });
       pendingWorkers.push(filePromise);
     }
-    const result = await Promise.allSettled(pendingWorkers);
-    console.log('RESULT :', result);
+    await Promise.allSettled(pendingWorkers);
+
     const durationMs = performance.now() - start;
     await fs.rm(uploadDir, { recursive: true });
     return {
@@ -90,8 +89,7 @@ export class FileService {
       durationMs,
       processed_1: bufferDataInt[0],
       skipped_2: bufferDataInt[1],
-      Proscessed: dataProcess.processed,
-      Skipped: dataProcess.skipped,
+      state: dataProcess.state as SharedState,
     };
   }
 }

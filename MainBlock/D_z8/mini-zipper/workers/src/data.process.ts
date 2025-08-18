@@ -5,11 +5,8 @@ export interface SharedState {
 
 export class DataProcess {
   bufferData: Int16Array;
-  // state: SharedState;
-  constructor(bufferData: Int16Array) {
-    this.bufferData = bufferData;
-    // this.bufferData[0] = state.processed;
-    // this.bufferData[1] = state.skipped;
+  constructor(bufferData: SharedArrayBuffer) {
+    this.bufferData = new Int16Array( bufferData,0,2);
   }
   get processed(): number {
     return Atomics.load(this.bufferData, 0);
@@ -22,5 +19,11 @@ export class DataProcess {
   }
   addSkipped(): void {
     Atomics.add(this.bufferData, 1, 1);
+  }
+  get state():SharedState {
+    return {
+      processed: this.processed,
+      skipped: this.skipped,
+    }
   }
 }

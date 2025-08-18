@@ -38,9 +38,6 @@ finally {
     release();
  }
 }
-
-
-// Создание thumbnail с сохранением пропорций
 async function createThumbnail(fileBuffer: Buffer,  outputPath: string){
   await sharp(fileBuffer)
     .resize(150, 150, {

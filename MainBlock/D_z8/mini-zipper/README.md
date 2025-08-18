@@ -53,11 +53,6 @@ $ npm run start:prod
 
 #3. Тестував в Postman. 
 
-#4. Не зміг скористуватись 
-
-Іnterface SharedState { processed: number; skipped: number }
-const state: SharedState = { processed: 0, skipped: 0 };
-
 #5. Оброблені файли зберігаються в outLoad.
 #6. Яка користь від const mutex = new Mutex(); при використанні Atomics.add(processed, 0, 1);
 не знаю.
